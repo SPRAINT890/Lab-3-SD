@@ -1,0 +1,47 @@
+MPLINK 4.49, Linker
+Linker Map File - Created Wed Nov 09 18:40:24 2022
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000004
+                   .cinit    romdata   0x000002    program   0x000004
+                   .org_1       code   0x000004    program   0x000062
+.config_2007_LED_TRIGGER.O       code   0x002007    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000034      
+                            0x002007    0x002007      
+            54 out of 8454 program addresses used, program memory utilization is 0%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                   led_on   0x00002a    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\LED_Trigger\Led_Trigger.ASM
+              loopa_timer   0x00002d    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\LED_Trigger\Led_Trigger.ASM
+              loopb_timer   0x000030    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\LED_Trigger\Led_Trigger.ASM
+                     main   0x000010    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\LED_Trigger\Led_Trigger.ASM
+               porta_init   0x000013    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\LED_Trigger\Led_Trigger.ASM
+               read_porta   0x000024    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\LED_Trigger\Led_Trigger.ASM
+              timer0_init   0x00001c    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\LED_Trigger\Led_Trigger.ASM
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                     main   0x000010    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\LED_Trigger\Led_Trigger.ASM
+               porta_init   0x000013    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\LED_Trigger\Led_Trigger.ASM
+              timer0_init   0x00001c    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\LED_Trigger\Led_Trigger.ASM
+               read_porta   0x000024    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\LED_Trigger\Led_Trigger.ASM
+                   led_on   0x00002a    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\LED_Trigger\Led_Trigger.ASM
+              loopa_timer   0x00002d    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\LED_Trigger\Led_Trigger.ASM
+              loopb_timer   0x000030    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\LED_Trigger\Led_Trigger.ASM
+
+
