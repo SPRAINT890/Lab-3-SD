@@ -1,4 +1,4 @@
-MPASM  5.51                      SAMPLING.ASM   11-9-2022  21:55:12         PAGE  1
+MPASM  5.40                      SAMPLING.ASM   11-9-2022  23:15:19         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -43,10 +43,10 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00003 ;==========================================================================
                       00004 ;  MPASM PIC16F877A processor include
                       00005 ; 
-                      00006 ;  (c) Copyright 1999-2013 Microchip Technology, All rights reserved
+                      00006 ;  (c) Copyright 1999-2011 Microchip Technology, All rights reserved
                       00007 ;==========================================================================
                       00008 
-                      00566         LIST
+                      00555         LIST
                       00035         
 2007   3FB3           00036         __CONFIG _CP_OFF & _WDT_OFF & _BODEN_OFF & _PWRTE_ON & _RC_OSC & _WRT_OFF & _LVP_ON & _CPD_OFF
                       00037 
@@ -57,7 +57,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00042 
                       00043 
                       00044 
-MPASM  5.51                      SAMPLING.ASM   11-9-2022  21:55:12         PAGE  2
+MPASM  5.40                      SAMPLING.ASM   11-9-2022  23:15:19         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -68,220 +68,199 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00047 ;***** VARIABLE DEFINITIONS
   0000007D            00048 w_temp          EQU     0x7D            ; variable used for context saving 
   0000007E            00049 status_temp     EQU     0x7E            ; variable used for context saving
-  0000007F            00050 pclath_temp     EQU     0x7F            ; variable used for context saving                      
+  0000007F            00050 pclath_temp     EQU     0x7F            ; variable used for context saving      
                       00051 
-  00000021            00052 STATE           EQU 0x21
-  0000003D            00053 TMR_Start       EQU d'61'
+  00000020            00052 AN0_RES         EQU 0x20
+  00000021            00053 AN1_RES         EQU     0x21
                       00054 
                       00055 
                       00056 
                       00057 
-                      00058 ;**********************************************************************
-                      00059         ORG     0x000             ; processor reset vector
-                      00060 
-0000   0000           00061         nop                       ; nop required for icd
-0001   2???           00062         goto    main              ; go to beginning of program
-                      00063 
-                      00064 
-                      00065         ORG     0x004             ; interrupt vector location
+                      00058 
+                      00059 
+                      00060 ;**********************************************************************
+                      00061         ORG     0x000             ; processor reset vector
+                      00062 
+0000   0000           00063         nop                       ; nop required for icd
+0001   2???           00064         goto    main              ; go to beginning of program
+                      00065 
                       00066 
-                      00067 ;Store Context - Begin 
-0004   00FD           00068         movwf   w_temp            ; save off current W register contents
-0005   0803           00069         movf    STATUS,w          ; move status register into W register
-0006   00FE           00070         movwf   status_temp       ; save off contents of STATUS register
-0007   080A           00071         movf    PCLATH,w          ; move pclath register into w register
-0008   00FF           00072         movwf   pclath_temp       ; save off contents of PCLATH register
-                      00073 ;Store Context - End
-                      00074 
-0009   081A           00075         movfw   RCREG
-000A   00A1           00076         movwf   STATE
-000B   1821           00077         btfsc   STATE, d'0'             ;STATE.0 == 1?
-000C   2???           00078         goto S0_1                               ;Yes
-000D   2???           00079         goto S0_0                               ;No
-000E                  00080 STATE_1
-000E   18A1           00081         btfsc   STATE, d'1'             ;STATE.1 == 1?
-000F   2???           00082         goto S1_1                               ;Yes
-0010   2???           00083         goto S1_0                               ;No
-0011                  00084 STATE_2
-0011   1921           00085         btfsc   STATE, d'2'             ;STATE.2 == 1?
-0012   2???           00086         goto S2_1                               ;Yes
-0013   2???           00087         goto S2_0                               ;No
-0014                  00088 STATE_7
-0014   1BA1           00089         btfsc   STATE, d'7'             ;STATE.7 == 1?
-0015   2???           00090         goto Set_State                  ;Yes
-0016   2???           00091         goto Clear_State                ;No
-                      00092         
-0017                  00093 S0_0
-0017   119F           00094         bcf     ADCON0, CHS0
-0018   2???           00095         goto STATE_1
-                      00096         
-0019                  00097 S0_1
-MPASM  5.51                      SAMPLING.ASM   11-9-2022  21:55:12         PAGE  3
+                      00067         ORG     0x004             ; interrupt vector location
+                      00068 
+0004   00FD           00069         movwf   w_temp            ; save off current W register contents
+0005   0803           00070         movf    STATUS,w          ; move status register into W register
+0006   00FE           00071         movwf   status_temp       ; save off contents of STATUS register
+0007   080A           00072         movf    PCLATH,w          ; move pclath register into w register
+0008   00FF           00073         movwf   pclath_temp       ; save off contents of PCLATH register
+                      00074         
+0009   190B           00075         btfsc   INTCON, T0IF
+000A   2???           00076         call    calc_analog_res
+000B   087F           00077         movf    pclath_temp,w     ; retrieve copy of PCLATH register
+000C   008A           00078         movwf   PCLATH            ; restore pre-isr PCLATH register contents
+000D   087E           00079         movf    status_temp,w     ; retrieve copy of STATUS register
+000E   0083           00080         movwf   STATUS            ; restore pre-isr STATUS register contents
+000F   0EFD           00081         swapf   w_temp,f
+0010   0E7D           00082         swapf   w_temp,w          ; restore pre-isr W register contents
+0011   0009           00083         retfie                    ; return from interrupt
+                      00084 
+0012                  00085 calc_analog_res
+0012   2???           00086         call    calc_val_0
+0013   081E           00087         movf    ADRESH, w
+0014   00A0           00088         movwf   AN0_RES
+0015   2???           00089         call    calc_val_1
+0016   081E           00090         movf    ADRESH, w
+0017   00A1           00091         movwf   AN1_RES
+0018   3006           00092         movlw   d'6'
+0019   0081           00093         movwf   TMR0
+001A   110B           00094         bcf             INTCON, T0IF
+001B   0008           00095         return
+                      00096 
+001C                  00097 calc_val_0
+MPASM  5.40                      SAMPLING.ASM   11-9-2022  23:15:19         PAGE  3
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-0019   159F           00098         bsf ADCON0, CHS0
-001A   2???           00099         goto STATE_1
-                      00100         
-001B                  00101 S1_0
-001B   121F           00102         bcf     ADCON0, CHS1
-001C   2???           00103         goto STATE_2
-                      00104         
-001D                  00105 S1_1
-001D   161F           00106         bsf     ADCON0, CHS1
-001E   2???           00107         goto STATE_2
-                      00108         
-001F                  00109 S2_0
-001F   129F           00110         bcf ADCON0, CHS2
-0020   2???           00111         goto STATE_7
-                      00112         
-0021                  00113 S2_1
-0021   169F           00114         bsf ADCON0, CHS2
-0022   2???           00115         goto STATE_7
-                      00116         
-0023                  00117 Set_State
-0023   0801           00118         movfw   d'1'
-0024   00A1           00119         movwf   STATE
-0025   2???           00120         goto Restore_Context
-                      00121         
-0026                  00122 Clear_State
-0026   3000           00123         movlw   d'0'
-0027   00A1           00124         movwf   STATE
-                      00125         
-                      00126 
-0028                  00127 Restore_Context 
-0028   128C           00128         bcf     PIR1, RCIF
-0029   019A           00129         clrf    RCREG
+001C   1303           00098         bcf             STATUS, RP1
+001D   1283           00099         bcf             STATUS, RP0
+                      00100 
+001E   119F           00101         bcf             ADCON0, CHS0
+001F   121F           00102         bcf             ADCON0, CHS1
+0020   129F           00103         bcf             ADCON0, CHS2
+0021   151F           00104         bsf     ADCON0, d'2'
+0022   2???           00105         call    check_flag_tmr0
+0023   0008           00106         return
+                      00107 
+0024                  00108 calc_val_1
+0024   1303           00109         bcf             STATUS, RP1
+0025   1283           00110         bcf             STATUS, RP0
+                      00111 
+0026   159F           00112         bsf             ADCON0, CHS0
+0027   121F           00113         bcf             ADCON0, CHS1
+0028   129F           00114         bcf             ADCON0, CHS2
+0029   151F           00115         bsf     ADCON0, d'2'
+002A   2???           00116         call    check_flag_tmr0
+002B   0008           00117         return
+                      00118 
+002C                  00119 check_flag_tmr0
+002C   191F           00120         btfsc   ADCON0, d'2'
+002D   0008           00121         return
+002E   2???           00122         goto check_flag_tmr0
+                      00123 
+002F                  00124 main
+002F   2???           00125         call porta_init
+0030   2???           00126         call portb_init
+0031   2???           00127         call portc_init
+0032   2???           00128         call timer0_init
+0033   2???           00129         goto read_select
                       00130 
-                      00131 ;Restore Context - Begin
-                      00132 
-002A   087F           00133         movf    pclath_temp,w     ; retrieve copy of PCLATH register
-002B   008A           00134         movwf   PCLATH            ; restore pre-isr PCLATH register contents
-002C   087E           00135         movf    status_temp,w     ; retrieve copy of STATUS register
-002D   0083           00136         movwf   STATUS            ; restore pre-isr STATUS register contents
-002E   0EFD           00137         swapf   w_temp,f
-002F   0E7D           00138         swapf   w_temp,w          ; restore pre-isr W register contents
-                      00139         
-                      00140 ;Restore Context - End 
-                      00141 
-0030   0009           00142         retfie                    ; return from interrupt
-                      00143 
-0031                  00144 main
-                      00145 
-                      00146 
-                      00147 ; Config Peripherals - Begin
+0034                  00131 porta_init
+                      00132         ;Config PORTA - start
+0034   1303           00133         bcf             STATUS, RP1             ;cambio al banco 1
+0035   1683           00134         bsf             STATUS, RP0
+0036   3003           00135         movlw   b'00000011'             ;seteo el pin 0 y 1 en input
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0037   0085           00136         movwf   TRISA
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0038   119F           00137         bcf             ADCON1, PCFG3   ;seteo la entrada como analogica
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0039   111F           00138         bcf             ADCON1, PCFG2   ;
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+003A   109F           00139         bcf             ADCON1, PCFG1   ;
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+003B   101F           00140         bcf             ADCON1, PCFG0   ;
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+003C   139F           00141         bcf             ADCON1, ADFM    ;Justifica izquierda
+                      00142         
+003D   1303           00143         bcf             STATUS, RP1             ;cambio al banco 0
+003E   1283           00144         bcf             STATUS, RP0
+MPASM  5.40                      SAMPLING.ASM   11-9-2022  23:15:19         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+003F   141F           00145         bsf             ADCON0, ADON    ;
+0040   0008           00146         return
+                      00147         ;Config PORTA - end
                       00148 
-                      00149         ; Config Timer0 - Begin
-0031   1303           00150                 bcf     STATUS, RP1                     ; Bank 1
-MPASM  5.51                      SAMPLING.ASM   11-9-2022  21:55:12         PAGE  4
-
-
-LOC  OBJECT CODE     LINE SOURCE TEXT
-  VALUE
-
-0032   1683           00151                 bsf             STATUS, RP0                     ; Bank 1
+0041                  00149 portb_init
+                      00150         ;Config PORTB - start
+0041   1303           00151         bcf             STATUS, RP1             ;cambio al banco 1
+0042   1683           00152         bsf             STATUS, RP0             
+0043   3000           00153         movlw   b'00000000'             ;seteo el puerto b como salida          
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0033   1281           00152                 bcf             OPTION_REG, T0CS        ; Select fosc/4 as clock source
+0044   0086           00154         movwf   TRISB
+0045   1303           00155         bcf             STATUS, RP1
+0046   1283           00156         bcf             STATUS, RP0
+0047   0008           00157         return
+                      00158         ;Config PORTB - end
+                      00159 
+0048                  00160 portc_init
+                      00161         ;Config PORTc - start
+0048   1303           00162         bcf             STATUS, RP1             ;cambio al banco 1
+0049   1683           00163         bsf             STATUS, RP0
+004A   3001           00164         movlw   b'00000001'             ;seteo el pin 0 como input      
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0034   1181           00153                 bcf     OPTION_REG, PSA         ; Use Prescaler
+004B   0087           00165         movwf   TRISC
+004C   1303           00166         bcf             STATUS, RP1             ;cambio al banco 0
+004D   1283           00167         bcf             STATUS, RP0
+004E   0008           00168         return
+                      00169         ;Config PORTc - end
+                      00170 
+004F                  00171 timer0_init
+004F   1303           00172         bcf     STATUS, RP1                     ;cambio al banco 1
+0050   1683           00173         bsf             STATUS, RP0
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0035   1501           00154                 bSf             OPTION_REG, PS2         ; Set Prescaler to 128
+0051   1281           00174         bcf             OPTION_REG, T0CS        ;utilizo el clock del microprocesador
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0036   1481           00155                 bSf             OPTION_REG, PS1
+0052   1181           00175         bcf             OPTION_REG, PSA         ;utilizo el Prescaler en Timer0
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0037   1001           00156                 bcf             OPTION_REG, PS0         ; t0 = (256-61)/1,000,000 * 4*128 = 0,09984s 
-                      00157         ; Config Timer0 - End
-                      00158 
-                      00159         ; Config ADCON0 - Begin
-0038   1283           00160                 bcf     STATUS, RP0                     ; Bank 0
-0039   1303           00161                 bcf             STATUS, RP1                     ; Bank 0
-003A   3081           00162                 movlw   b'10000001'                     ; Set ADCON0
-003B   009F           00163                 movwf   ADCON0
-                      00164         ; Config ADCON0 - End
-                      00165 
-                      00166         ; Config ADCON1 - Begin
-003C   1683           00167                 bsf     STATUS, RP0                     ; Bank 1
-003D   1303           00168                 bcf             STATUS, RP1                     ; Bank 1
-003E   3000           00169                 movlw   b'00000000'                     ; Set ADCON1 to Receive Analog Input in All its 
-                            pins
+0053   1401           00176         bsf             OPTION_REG,     PS0             ;
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-003F   009F           00170                 movwf   ADCON1
-                      00171         ; Config ADCON1 - End
-                      00172 
-                      00173         ;Config USART - Begin
-0040   1303           00174                 bcf     STATUS, RP1          ; Bank1
-0041   1683           00175                 bsf     STATUS, RP0          
-0042   3026           00176                 movlw   b'00100110'          ; Select 8-bit transmition and enable transmition. Select A
-                            synchronous mode and High Speed. Set TSR empty
+0054   1481           00177         bsf             OPTION_REG,     PS1             ;
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0043   0098           00177                 movwf   TXSTA
-0044   3006           00178                 movlw   d'6'                 ; Set value d'6' to Baud Rate generator register 
-Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0045   0099           00179                 movwf   SPBRG                ; With a 10MHz uC and BRGH = 1 (HIGH Speed) d'6' correspond
-                             to a desired bps of 8929 (closest to 9600 possible, error of 6.99%) 
-Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0046   168C           00180                 bsf     PIE1,RCIE            ; Enable reception interruptions from USART
-0047   1283           00181                 bcf     STATUS, RP0          ; Bank0
-0048   3098           00182                 movlw   b'10011000'          ; Enable serial port and select 8-bit reception. Enable con
-                            tinuos reception and enable adress detection. No framing or overrun error enable
-0049   0098           00183                 movwf   RCSTA
-                      00184     ;Config USART - End
-                      00185 
-                      00186 ;Config Peripherals - End
+0055   1501           00178         bsf             OPTION_REG,     PS2             ;
+0056   178B           00179         bsf             INTCON, GIE
+0057   168B           00180         bsf             INTCON, T0IE
+0058   1283           00181         bcf             STATUS, RP0                     ;cambio al banco 1
+0059   1303           00182         bcf             STATUS, RP1
+005A   3006           00183         movlw   d'6'                            ;seteo el timer en 6
+005B   0081           00184         movwf   TMR0
+005C   110B           00185         bcf             INTCON, T0IF            ;limpio la flag del timer overflow
+005D   0008           00186         return
                       00187 
-                      00188 ;Init Variables- Begin
-004A   1303           00189         bcf     STATUS, RP1          ; Bank0
-004B   1283           00190         bcf     STATUS, RP0          
-MPASM  5.51                      SAMPLING.ASM   11-9-2022  21:55:12         PAGE  5
+005E                  00188 read_select
+005E   1303           00189         bcf             STATUS, RP1                     ;cambio al banco 0
+005F   1283           00190         bcf             STATUS, RP0
+MPASM  5.40                      SAMPLING.ASM   11-9-2022  23:15:19         PAGE  5
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-004C   3000           00191         movlw d'0'
-004D   00A1           00192         movwf   STATE
-                      00193 ;Init Variables- End
+0060   1C07           00191         btfss   PORTC, d'0'                     ;el select es 0
+0061   2???           00192         goto    set_an0                         ;no
+0062   2???           00193         goto    set_an1                         ;si
                       00194 
-                      00195 ; Config Interrupts - Begin
-                      00196 
-004E   1303           00197         bcf     STATUS, RP1                             ; Select bank 0
-004F   1283           00198         bcf     STATUS, RP0                             ; Select bank 0
-0050   170B           00199         bsf             INTCON, PEIE
-0051   178B           00200         bsf             INTCON, GIE                             ; Enable Global interrupts.
-                      00201 
-                      00202 ; Config Interrupts - End
-                      00203 
-0052   1303           00204         bcf     STATUS, RP1                             ; Select bank 0
-0053   1283           00205         bcf     STATUS, RP0                             ; Select bank 0
+0063                  00195 set_an0
+0063   0820           00196         movf    AN0_RES, w                      ;muestro en el puerto b el resultado de an0
+0064   0086           00197         movwf   PORTB
+0065   2???           00198         goto    read_select
+                      00199 
+0066                  00200 set_an1                                                 ;muestro en el puerto b el resultado de an0     
+0066   0821           00201         movf    AN1_RES, w
+0067   0086           00202         movwf   PORTB
+0068   2???           00203         goto    read_select
+                      00204 
+                      00205 
                       00206 
-0054                  00207 state_loop
-0054   1C21           00208         btfss   STATE, d'0'                     ;STATE.0 == 1?
-0055   2???           00209         goto state_loop                         ;No
-0056   303D           00210         movlw   TMR_Start                       ;Yes
-0057   0081           00211         movwf   TMR0                            ;Restart Timer
-0058   110B           00212         bcf             INTCON, T0IF            ;T0IF = 0
-0059                  00213 timer_loop
-0059   1D0B           00214         btfss   INTCON, T0IF            ;T0IF == 1?
-005A   2???           00215         goto timer_loop                         ;No
-005B   151F           00216         bsf             ADCON0, d'2'            ;Yes
-005C                  00217 AD_loop
-005C   191F           00218         btfsc   ADCON0, d'2'            ;ADCON0.2 == 0?
-005D   2???           00219         goto AD_loop                            ;No
-005E   081E           00220         movfw   ADRESH                          ;Yes
-005F   0099           00221         movwf   TXREG
-0060   2???           00222         goto state_loop
-                      00223 
-                      00224 
-                      00225 
-                      00226 
-                      00227 
-                      00228 
-                      00229 
-                      00230 
-3FB3                  00231         END                       ; directive 'end of program'
-MPASM  5.51                      SAMPLING.ASM   11-9-2022  21:55:12         PAGE  6
+                      00207 
+                      00208 
+                      00209 
+3FB3                  00210         END                       ; directive 'end of program'
+MPASM  5.40                      SAMPLING.ASM   11-9-2022  23:15:19         PAGE  6
 
 
 SYMBOL TABLE
@@ -302,7 +281,8 @@ ADIF                              00000006
 ADON                              00000000
 ADRESH                            0000001E
 ADRESL                            0000009E
-AD_loop                           0000005C
+AN0_RES                           00000020
+AN1_RES                           00000021
 BCLIE                             00000003
 BCLIF                             00000003
 BF                                00000000
@@ -339,13 +319,13 @@ CCPR2L                            0000001B
 CHS0                              00000003
 CHS1                              00000004
 CHS2                              00000005
-CIS                               00000003
-MPASM  5.51                      SAMPLING.ASM   11-9-2022  21:55:12         PAGE  7
+MPASM  5.40                      SAMPLING.ASM   11-9-2022  23:15:19         PAGE  7
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+CIS                               00000003
 CKE                               00000006
 CKP                               00000004
 CM0                               00000000
@@ -364,7 +344,6 @@ CVRCON                            0000009D
 CVREN                             00000007
 CVROE                             00000006
 CVRR                              00000005
-Clear_State                       00000026
 D                                 00000005
 DATA_ADDRESS                      00000005
 DC                                00000001
@@ -399,7 +378,7 @@ INTE                              00000004
 INTEDG                            00000006
 INTF                              00000001
 IRP                               00000007
-MPASM  5.51                      SAMPLING.ASM   11-9-2022  21:55:12         PAGE  8
+MPASM  5.40                      SAMPLING.ASM   11-9-2022  23:15:19         PAGE  8
 
 
 SYMBOL TABLE
@@ -458,7 +437,7 @@ RA4                               00000004
 RA5                               00000005
 RB0                               00000000
 RB1                               00000001
-MPASM  5.51                      SAMPLING.ASM   11-9-2022  21:55:12         PAGE  9
+MPASM  5.40                      SAMPLING.ASM   11-9-2022  23:15:19         PAGE  9
 
 
 SYMBOL TABLE
@@ -508,21 +487,8 @@ RX9                               00000006
 RX9D                              00000000
 R_NOT_W                           00000002
 R_W                               00000002
-Restore_Context                   00000028
 S                                 00000003
-S0_0                              00000017
-S0_1                              00000019
-S1_0                              0000001B
-S1_1                              0000001D
-S2_0                              0000001F
-S2_1                              00000021
 SEN                               00000000
-MPASM  5.51                      SAMPLING.ASM   11-9-2022  21:55:12         PAGE 10
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 SMP                               00000007
 SPBRG                             00000099
 SPEN                              00000007
@@ -530,6 +496,12 @@ SREN                              00000005
 SSPADD                            00000093
 SSPBUF                            00000013
 SSPCON                            00000014
+MPASM  5.40                      SAMPLING.ASM   11-9-2022  23:15:19         PAGE 10
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 SSPCON2                           00000091
 SSPEN                             00000005
 SSPIE                             00000003
@@ -540,13 +512,8 @@ SSPM2                             00000002
 SSPM3                             00000003
 SSPOV                             00000006
 SSPSTAT                           00000094
-STATE                             00000021
-STATE_1                           0000000E
-STATE_2                           00000011
-STATE_7                           00000014
 STATUS                            00000003
 SYNC                              00000004
-Set_State                         00000023
 T0CS                              00000005
 T0IE                              00000005
 T0IF                              00000002
@@ -563,7 +530,6 @@ T2CON                             00000012
 TMR0                              00000001
 TMR0IE                            00000005
 TMR0IF                            00000002
-TMR1                              0000000E
 TMR1CS                            00000001
 TMR1H                             0000000F
 TMR1IE                            00000000
@@ -574,14 +540,7 @@ TMR2                              00000011
 TMR2IE                            00000001
 TMR2IF                            00000001
 TMR2ON                            00000002
-TMR_Start                         0000003D
 TOUTPS0                           00000003
-MPASM  5.51                      SAMPLING.ASM   11-9-2022  21:55:12         PAGE 11
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 TOUTPS1                           00000004
 TOUTPS2                           00000005
 TOUTPS3                           00000006
@@ -596,6 +555,12 @@ TRISB                             00000086
 TRISB0                            00000000
 TRISB1                            00000001
 TRISB2                            00000002
+MPASM  5.40                      SAMPLING.ASM   11-9-2022  23:15:19         PAGE 11
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 TRISB3                            00000003
 TRISB4                            00000004
 TRISB5                            00000005
@@ -635,12 +600,6 @@ TXREG                             00000019
 TXSTA                             00000098
 UA                                00000001
 W                                 00000000
-MPASM  5.51                      SAMPLING.ASM   11-9-2022  21:55:12         PAGE 12
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 WCOL                              00000007
 WR                                00000001
 WREN                              00000002
@@ -648,21 +607,20 @@ WRERR                             00000003
 Z                                 00000002
 _BODEN_OFF                        00003FBF
 _BODEN_ON                         00003FFF
-_BOREN_OFF                        00003FBF
-_BOREN_ON                         00003FFF
 _CONFIG                           00002007
 _CPD_OFF                          00003FFF
 _CPD_ON                           00003EFF
 _CP_ALL                           00001FFF
 _CP_OFF                           00003FFF
-_CP_ON                            00001FFF
 _DEBUG_OFF                        00003FFF
 _DEBUG_ON                         000037FF
+MPASM  5.40                      SAMPLING.ASM   11-9-2022  23:15:19         PAGE 12
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 _DEVID1                           00002006
-_FOSC_EXTRC                       00003FFF
-_FOSC_HS                          00003FFE
-_FOSC_LP                          00003FFC
-_FOSC_XT                          00003FFD
 _HS_OSC                           00003FFE
 _IDLOC0                           00002000
 _IDLOC1                           00002001
@@ -674,8 +632,6 @@ _LVP_ON                           00003FFF
 _PWRTE_OFF                        00003FFF
 _PWRTE_ON                         00003FF7
 _RC_OSC                           00003FFF
-_WDTE_OFF                         00003FFB
-_WDTE_ON                          00003FFF
 _WDT_OFF                          00003FFB
 _WDT_ON                           00003FFF
 _WRT_1FOURTH                      00003BFF
@@ -685,21 +641,24 @@ _WRT_OFF                          00003FFF
 _XT_OSC                           00003FFD
 __16F877A                         00000001
 __DEBUG                           1
-main                              00000031
+calc_analog_res                   00000012
+calc_val_0                        0000001C
+calc_val_1                        00000024
+check_flag_tmr0                   0000002C
+main                              0000002F
 pclath_temp                       0000007F
-state_loop                        00000054
+porta_init                        00000034
+portb_init                        00000041
+portc_init                        00000048
+read_select                       0000005E
+set_an0                           00000063
+set_an1                           00000066
 status_temp                       0000007E
-timer_loop                        00000059
+timer0_init                       0000004F
 w_temp                            0000007D
-
-MPASM  5.51                      SAMPLING.ASM   11-9-2022  21:55:12         PAGE 13
-
-
-
-
 
 Errors   :     0
 Warnings :     0 reported,     0 suppressed
-Messages :     9 reported,     0 suppressed
+Messages :    13 reported,     0 suppressed
 
 

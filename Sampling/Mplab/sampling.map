@@ -1,12 +1,12 @@
-MPLINK 4.49, Linker
-Linker Map File - Created Wed Nov 09 21:55:12 2022
+MPLINK 4.38, Linker
+Linker Map File - Created Wed Nov 09 23:15:20 2022
 
                                  Section Info
                   Section       Type    Address   Location Size(Bytes)
                 ---------  ---------  ---------  ---------  ---------
                    .org_0       code   0x000000    program   0x000004
                    .cinit    romdata   0x000002    program   0x000004
-                   .org_1       code   0x000004    program   0x0000ba
+                   .org_1       code   0x000004    program   0x0000ca
   .config_2007_SAMPLING.O       code   0x002007    program   0x000002
 
 
@@ -14,52 +14,44 @@ Linker Map File - Created Wed Nov 09 21:55:12 2022
                               Program Memory Usage 
                                Start         End      
                            ---------   ---------      
-                            0x000000    0x000060      
+                            0x000000    0x000068      
                             0x002007    0x002007      
-            98 out of 8454 program addresses used, program memory utilization is 1%
+            106 out of 8454 program addresses used, program memory utilization is 1%
 
 
 
                               Symbols - Sorted by Name
                      Name    Address   Location    Storage File                     
                 ---------  ---------  ---------  --------- ---------                
-                  AD_loop   0x00005c    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
-              Clear_State   0x000026    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
-          Restore_Context   0x000028    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
-                     S0_0   0x000017    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
-                     S0_1   0x000019    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
-                     S1_0   0x00001b    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
-                     S1_1   0x00001d    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
-                     S2_0   0x00001f    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
-                     S2_1   0x000021    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
-                  STATE_1   0x00000e    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
-                  STATE_2   0x000011    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
-                  STATE_7   0x000014    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
-                Set_State   0x000023    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
-                     main   0x000031    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
-               state_loop   0x000054    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
-               timer_loop   0x000059    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
+          calc_analog_res   0x000012    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
+               calc_val_0   0x00001c    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
+               calc_val_1   0x000024    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
+          check_flag_tmr0   0x00002c    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
+                     main   0x00002f    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
+               porta_init   0x000034    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
+               portb_init   0x000041    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
+               portc_init   0x000048    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
+              read_select   0x00005e    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
+                  set_an0   0x000063    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
+                  set_an1   0x000066    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
+              timer0_init   0x00004f    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
 
 
 
                               Symbols - Sorted by Address
                      Name    Address   Location    Storage File                     
                 ---------  ---------  ---------  --------- ---------                
-                  STATE_1   0x00000e    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
-                  STATE_2   0x000011    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
-                  STATE_7   0x000014    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
-                     S0_0   0x000017    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
-                     S0_1   0x000019    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
-                     S1_0   0x00001b    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
-                     S1_1   0x00001d    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
-                     S2_0   0x00001f    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
-                     S2_1   0x000021    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
-                Set_State   0x000023    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
-              Clear_State   0x000026    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
-          Restore_Context   0x000028    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
-                     main   0x000031    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
-               state_loop   0x000054    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
-               timer_loop   0x000059    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
-                  AD_loop   0x00005c    program     static C:\Users\gaspa\OneDrive\Escritorio\Lab3_SimulIDE\Sampling.ASM
+          calc_analog_res   0x000012    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
+               calc_val_0   0x00001c    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
+               calc_val_1   0x000024    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
+          check_flag_tmr0   0x00002c    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
+                     main   0x00002f    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
+               porta_init   0x000034    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
+               portb_init   0x000041    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
+               portc_init   0x000048    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
+              timer0_init   0x00004f    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
+              read_select   0x00005e    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
+                  set_an0   0x000063    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
+                  set_an1   0x000066    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
 
 

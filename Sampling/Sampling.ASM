@@ -83,12 +83,12 @@ AN1_RES		EQU	0x21
 	retfie                    ; return from interrupt
 
 calc_analog_res
-	call calc_val_0
-	movf ADRESH, w
-	movwf AN0_RES
-	call calc_val_1
-	movf ADRESH, w
-	movwf AN0_RES
+	call 	calc_val_0
+	movf 	ADRESH, w
+	movwf 	AN0_RES
+	call 	calc_val_1
+	movf 	ADRESH, w
+	movwf 	AN1_RES
 	movlw	d'6'
 	movwf	TMR0
 	bcf		INTCON, T0IF
@@ -188,7 +188,7 @@ timer0_init
 read_select
 	bcf		STATUS, RP1			;cambio al banco 0
 	bcf		STATUS, RP0
-	btfsc	PORTC, d'0'			;el select es 0
+	btfss	PORTC, d'0'			;el select es 0
 	goto	set_an0				;no
 	goto	set_an1				;si
 
