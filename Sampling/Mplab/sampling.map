@@ -1,5 +1,5 @@
-MPLINK 4.38, Linker
-Linker Map File - Created Sun Nov 13 12:24:08 2022
+MPLINK 4.49, Linker
+Linker Map File - Created Sun Nov 13 14:55:59 2022
 
                                  Section Info
                   Section       Type    Address   Location Size(Bytes)
@@ -23,35 +23,35 @@ Linker Map File - Created Sun Nov 13 12:24:08 2022
                               Symbols - Sorted by Name
                      Name    Address   Location    Storage File                     
                 ---------  ---------  ---------  --------- ---------                
-          calc_analog_res   0x000012    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
-               calc_val_0   0x00001c    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
-               calc_val_1   0x000024    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
-          check_flag_done   0x00002c    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
-                     main   0x00002f    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
-               porta_init   0x000034    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
-               portb_init   0x000041    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
-               portc_init   0x000048    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
-              read_select   0x00005e    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
-                  set_an0   0x000063    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
-                  set_an1   0x000066    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
-              timer0_init   0x00004f    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
+          calc_analog_res   0x000012    program     static C:\Users\gaspa\lab-3-sd\Sampling\Sampling.ASM
+               calc_val_0   0x00001c    program     static C:\Users\gaspa\lab-3-sd\Sampling\Sampling.ASM
+               calc_val_1   0x000024    program     static C:\Users\gaspa\lab-3-sd\Sampling\Sampling.ASM
+          check_flag_done   0x00002c    program     static C:\Users\gaspa\lab-3-sd\Sampling\Sampling.ASM
+                     main   0x00002f    program     static C:\Users\gaspa\lab-3-sd\Sampling\Sampling.ASM
+               porta_init   0x000034    program     static C:\Users\gaspa\lab-3-sd\Sampling\Sampling.ASM
+               portb_init   0x000041    program     static C:\Users\gaspa\lab-3-sd\Sampling\Sampling.ASM
+               portc_init   0x000048    program     static C:\Users\gaspa\lab-3-sd\Sampling\Sampling.ASM
+              read_select   0x00005e    program     static C:\Users\gaspa\lab-3-sd\Sampling\Sampling.ASM
+                  set_an0   0x000063    program     static C:\Users\gaspa\lab-3-sd\Sampling\Sampling.ASM
+                  set_an1   0x000066    program     static C:\Users\gaspa\lab-3-sd\Sampling\Sampling.ASM
+              timer0_init   0x00004f    program     static C:\Users\gaspa\lab-3-sd\Sampling\Sampling.ASM
 
 
 
                               Symbols - Sorted by Address
                      Name    Address   Location    Storage File                     
                 ---------  ---------  ---------  --------- ---------                
-          calc_analog_res   0x000012    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
-               calc_val_0   0x00001c    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
-               calc_val_1   0x000024    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
-          check_flag_done   0x00002c    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
-                     main   0x00002f    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
-               porta_init   0x000034    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
-               portb_init   0x000041    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
-               portc_init   0x000048    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
-              timer0_init   0x00004f    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
-              read_select   0x00005e    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
-                  set_an0   0x000063    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
-                  set_an1   0x000066    program     static C:\Users\Gaspar\Lab-3-SD\Sampling\Sampling.ASM
+          calc_analog_res   0x000012    program     static C:\Users\gaspa\lab-3-sd\Sampling\Sampling.ASM
+               calc_val_0   0x00001c    program     static C:\Users\gaspa\lab-3-sd\Sampling\Sampling.ASM
+               calc_val_1   0x000024    program     static C:\Users\gaspa\lab-3-sd\Sampling\Sampling.ASM
+          check_flag_done   0x00002c    program     static C:\Users\gaspa\lab-3-sd\Sampling\Sampling.ASM
+                     main   0x00002f    program     static C:\Users\gaspa\lab-3-sd\Sampling\Sampling.ASM
+               porta_init   0x000034    program     static C:\Users\gaspa\lab-3-sd\Sampling\Sampling.ASM
+               portb_init   0x000041    program     static C:\Users\gaspa\lab-3-sd\Sampling\Sampling.ASM
+               portc_init   0x000048    program     static C:\Users\gaspa\lab-3-sd\Sampling\Sampling.ASM
+              timer0_init   0x00004f    program     static C:\Users\gaspa\lab-3-sd\Sampling\Sampling.ASM
+              read_select   0x00005e    program     static C:\Users\gaspa\lab-3-sd\Sampling\Sampling.ASM
+                  set_an0   0x000063    program     static C:\Users\gaspa\lab-3-sd\Sampling\Sampling.ASM
+                  set_an1   0x000066    program     static C:\Users\gaspa\lab-3-sd\Sampling\Sampling.ASM
 
 

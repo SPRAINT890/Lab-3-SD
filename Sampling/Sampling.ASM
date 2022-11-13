@@ -89,7 +89,7 @@ calc_analog_res
 	call 	calc_val_1		;calcuki ek valor de an1
 	movf 	ADRESH, w		;guardo el resultado en AN1_RES
 	movwf 	AN1_RES
-	movlw	d'6'			;vuelvo a cargar el timer0
+	movlw	d'60'			;vuelvo a cargar el timer0
 	movwf	TMR0
 	bcf		INTCON, T0IF	;limpio la flag de timer0
 	return
@@ -173,14 +173,14 @@ timer0_init
 	bsf		STATUS,	RP0
 	bcf		OPTION_REG, T0CS	;utilizo el clock del microprocesador
 	bcf		OPTION_REG, PSA		;utilizo el Prescaler en Timer0
-	bsf		OPTION_REG,	PS0		;cargo el prescaler en 256
+	bcf		OPTION_REG,	PS0		;cargo el prescaler en 256
 	bsf		OPTION_REG,	PS1		;
 	bsf		OPTION_REG,	PS2		;
 	bsf		INTCON, GIE			;activo las interrupciones
 	bsf		INTCON, T0IE		;activo la interrupcion por overflow del timer 0
 	bcf		STATUS, RP0			;cambio al banco 0
 	bcf		STATUS, RP1
-	movlw	d'6'				;seteo el timer en 6
+	movlw	d'60'				;seteo el timer en 6
 	movwf	TMR0
 	bcf		INTCON, T0IF		;limpio la flag del timer overflow
 	return

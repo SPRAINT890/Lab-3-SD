@@ -1,4 +1,4 @@
-MPASM  5.40                      SAMPLING.ASM   11-13-2022  12:24:08         PAGE  1
+MPASM  5.51                      SAMPLING.ASM   11-13-2022  14:55:59         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -43,10 +43,10 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00003 ;==========================================================================
                       00004 ;  MPASM PIC16F877A processor include
                       00005 ; 
-                      00006 ;  (c) Copyright 1999-2011 Microchip Technology, All rights reserved
+                      00006 ;  (c) Copyright 1999-2013 Microchip Technology, All rights reserved
                       00007 ;==========================================================================
                       00008 
-                      00555         LIST
+                      00566         LIST
                       00035         
 2007   3FB3           00036         __CONFIG _CP_OFF & _WDT_OFF & _BODEN_OFF & _PWRTE_ON & _RC_OSC & _WRT_OFF & _LVP_ON & _CPD_OFF
                       00037 
@@ -57,7 +57,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00042 
                       00043 
                       00044 
-MPASM  5.40                      SAMPLING.ASM   11-13-2022  12:24:08         PAGE  2
+MPASM  5.51                      SAMPLING.ASM   11-13-2022  14:55:59         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -110,13 +110,13 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 0015   2???           00089         call    calc_val_1              ;calcuki ek valor de an1
 0016   081E           00090         movf    ADRESH, w               ;guardo el resultado en AN1_RES
 0017   00A1           00091         movwf   AN1_RES
-0018   3006           00092         movlw   d'6'                    ;vuelvo a cargar el timer0
+0018   303C           00092         movlw   d'60'                   ;vuelvo a cargar el timer0
 0019   0081           00093         movwf   TMR0
 001A   110B           00094         bcf             INTCON, T0IF    ;limpio la flag de timer0
 001B   0008           00095         return
                       00096 
 001C                  00097 calc_val_0
-MPASM  5.40                      SAMPLING.ASM   11-13-2022  12:24:08         PAGE  3
+MPASM  5.51                      SAMPLING.ASM   11-13-2022  14:55:59         PAGE  3
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -175,7 +175,7 @@ Message[302]: Register in operand not in bank 0.  Ensure that bank bits are corr
                       00142         
 003D   1303           00143         bcf             STATUS, RP1             ;cambio al banco 0
 003E   1283           00144         bcf             STATUS, RP0
-MPASM  5.40                      SAMPLING.ASM   11-13-2022  12:24:08         PAGE  4
+MPASM  5.51                      SAMPLING.ASM   11-13-2022  14:55:59         PAGE  4
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -217,7 +217,7 @@ Message[302]: Register in operand not in bank 0.  Ensure that bank bits are corr
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
 0052   1181           00175         bcf             OPTION_REG, PSA         ;utilizo el Prescaler en Timer0
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0053   1401           00176         bsf             OPTION_REG,     PS0             ;cargo el prescaler en 256
+0053   1001           00176         bcf             OPTION_REG,     PS0             ;cargo el prescaler en 256
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
 0054   1481           00177         bsf             OPTION_REG,     PS1             ;
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
@@ -226,7 +226,7 @@ Message[302]: Register in operand not in bank 0.  Ensure that bank bits are corr
 0057   168B           00180         bsf             INTCON, T0IE            ;activo la interrupcion por overflow del timer 0
 0058   1283           00181         bcf             STATUS, RP0                     ;cambio al banco 0
 0059   1303           00182         bcf             STATUS, RP1
-005A   3006           00183         movlw   d'6'                            ;seteo el timer en 6
+005A   303C           00183         movlw   d'60'                           ;seteo el timer en 6
 005B   0081           00184         movwf   TMR0
 005C   110B           00185         bcf             INTCON, T0IF            ;limpio la flag del timer overflow
 005D   0008           00186         return
@@ -234,7 +234,7 @@ Message[302]: Register in operand not in bank 0.  Ensure that bank bits are corr
 005E                  00188 read_select
 005E   1303           00189         bcf             STATUS, RP1                     ;cambio al banco 0
 005F   1283           00190         bcf             STATUS, RP0
-MPASM  5.40                      SAMPLING.ASM   11-13-2022  12:24:08         PAGE  5
+MPASM  5.51                      SAMPLING.ASM   11-13-2022  14:55:59         PAGE  5
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -260,7 +260,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00208 
                       00209 
 3FB3                  00210         END                       ; directive 'end of program'
-MPASM  5.40                      SAMPLING.ASM   11-13-2022  12:24:08         PAGE  6
+MPASM  5.51                      SAMPLING.ASM   11-13-2022  14:55:59         PAGE  6
 
 
 SYMBOL TABLE
@@ -319,7 +319,7 @@ CCPR2L                            0000001B
 CHS0                              00000003
 CHS1                              00000004
 CHS2                              00000005
-MPASM  5.40                      SAMPLING.ASM   11-13-2022  12:24:08         PAGE  7
+MPASM  5.51                      SAMPLING.ASM   11-13-2022  14:55:59         PAGE  7
 
 
 SYMBOL TABLE
@@ -378,7 +378,7 @@ INTE                              00000004
 INTEDG                            00000006
 INTF                              00000001
 IRP                               00000007
-MPASM  5.40                      SAMPLING.ASM   11-13-2022  12:24:08         PAGE  8
+MPASM  5.51                      SAMPLING.ASM   11-13-2022  14:55:59         PAGE  8
 
 
 SYMBOL TABLE
@@ -437,7 +437,7 @@ RA4                               00000004
 RA5                               00000005
 RB0                               00000000
 RB1                               00000001
-MPASM  5.40                      SAMPLING.ASM   11-13-2022  12:24:08         PAGE  9
+MPASM  5.51                      SAMPLING.ASM   11-13-2022  14:55:59         PAGE  9
 
 
 SYMBOL TABLE
@@ -496,7 +496,7 @@ SREN                              00000005
 SSPADD                            00000093
 SSPBUF                            00000013
 SSPCON                            00000014
-MPASM  5.40                      SAMPLING.ASM   11-13-2022  12:24:08         PAGE 10
+MPASM  5.51                      SAMPLING.ASM   11-13-2022  14:55:59         PAGE 10
 
 
 SYMBOL TABLE
@@ -530,6 +530,7 @@ T2CON                             00000012
 TMR0                              00000001
 TMR0IE                            00000005
 TMR0IF                            00000002
+TMR1                              0000000E
 TMR1CS                            00000001
 TMR1H                             0000000F
 TMR1IE                            00000000
@@ -554,13 +555,13 @@ TRISA5                            00000005
 TRISB                             00000086
 TRISB0                            00000000
 TRISB1                            00000001
-TRISB2                            00000002
-MPASM  5.40                      SAMPLING.ASM   11-13-2022  12:24:08         PAGE 11
+MPASM  5.51                      SAMPLING.ASM   11-13-2022  14:55:59         PAGE 11
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+TRISB2                            00000002
 TRISB3                            00000003
 TRISB4                            00000004
 TRISB5                            00000005
@@ -607,20 +608,27 @@ WRERR                             00000003
 Z                                 00000002
 _BODEN_OFF                        00003FBF
 _BODEN_ON                         00003FFF
+_BOREN_OFF                        00003FBF
+_BOREN_ON                         00003FFF
 _CONFIG                           00002007
 _CPD_OFF                          00003FFF
 _CPD_ON                           00003EFF
 _CP_ALL                           00001FFF
-_CP_OFF                           00003FFF
-_DEBUG_OFF                        00003FFF
-_DEBUG_ON                         000037FF
-MPASM  5.40                      SAMPLING.ASM   11-13-2022  12:24:08         PAGE 12
+MPASM  5.51                      SAMPLING.ASM   11-13-2022  14:55:59         PAGE 12
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+_CP_OFF                           00003FFF
+_CP_ON                            00001FFF
+_DEBUG_OFF                        00003FFF
+_DEBUG_ON                         000037FF
 _DEVID1                           00002006
+_FOSC_EXTRC                       00003FFF
+_FOSC_HS                          00003FFE
+_FOSC_LP                          00003FFC
+_FOSC_XT                          00003FFD
 _HS_OSC                           00003FFE
 _IDLOC0                           00002000
 _IDLOC1                           00002001
@@ -632,6 +640,8 @@ _LVP_ON                           00003FFF
 _PWRTE_OFF                        00003FFF
 _PWRTE_ON                         00003FF7
 _RC_OSC                           00003FFF
+_WDTE_OFF                         00003FFB
+_WDTE_ON                          00003FFF
 _WDT_OFF                          00003FFB
 _WDT_ON                           00003FFF
 _WRT_1FOURTH                      00003BFF
