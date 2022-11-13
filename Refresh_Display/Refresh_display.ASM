@@ -139,7 +139,7 @@ show_in_display
 	rrf		select_output		;cambio el select al siguiente puerto
 	btfsc	STATUS, C			;si el select esta vacio, le cargo el valor al puerto 4
 	call	reset_count
-	movlw	d'6'
+	movlw	d'60'
 	movwf	TMR0				;vuelvo a configurar el timer0
 	bcf		INTCON, T0IF		;limpio la flag del timer0
 	return
@@ -239,14 +239,14 @@ timer0_init
 	bsf		STATUS,	RP0
 	bcf		OPTION_REG, T0CS	;utilizo el clock del microprocesador
 	bcf		OPTION_REG, PSA		;utilizo el Prescaler en Timer0
-	bsf		OPTION_REG,	PS0		;cargo el prescaler en 256
+	bcf		OPTION_REG,	PS0		;cargo el prescaler en 128
 	bsf		OPTION_REG,	PS1		;
 	bsf		OPTION_REG,	PS2		;
 	bsf		INTCON, GIE			;activo las interrupciones generales
 	bsf		INTCON, T0IE		;activo la interrupcion por overflow del timer 0
 	bcf		STATUS, RP0			;cambio al banco 0
 	bcf		STATUS, RP1
-	movlw	d'6'				;seteo el timer en 6
+	movlw	d'60'				;seteo el timer en 60
 	movwf	TMR0
 	bcf		INTCON, T0IF		;limpio la flag del timer overflow
 	return

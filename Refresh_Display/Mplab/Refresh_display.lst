@@ -1,4 +1,4 @@
-MPASM  5.40               REFRESH_DISPLAY.ASM   11-13-2022  12:03:40         PAGE  1
+MPASM  5.51               REFRESH_DISPLAY.ASM   11-13-2022  14:44:41         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -43,10 +43,10 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00003 ;==========================================================================
                       00004 ;  MPASM PIC16F877A processor include
                       00005 ; 
-                      00006 ;  (c) Copyright 1999-2011 Microchip Technology, All rights reserved
+                      00006 ;  (c) Copyright 1999-2013 Microchip Technology, All rights reserved
                       00007 ;==========================================================================
                       00008 
-                      00555         LIST
+                      00566         LIST
                       00035         
 2007   3FB3           00036         __CONFIG _CP_OFF & _WDT_OFF & _BODEN_OFF & _PWRTE_ON & _RC_OSC & _WRT_OFF & _LVP_ON & _CPD_OFF
                       00037 
@@ -57,7 +57,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00042 
                       00043 
                       00044 
-MPASM  5.40               REFRESH_DISPLAY.ASM   11-13-2022  12:03:40         PAGE  2
+MPASM  5.51               REFRESH_DISPLAY.ASM   11-13-2022  14:44:41         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -116,7 +116,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
   00000048            00095 char_W EQU 0x48
   00000049            00096 char_X EQU 0x49
   0000004A            00097 char_Z EQU 0x4A
-MPASM  5.40               REFRESH_DISPLAY.ASM   11-13-2022  12:03:40         PAGE  3
+MPASM  5.51               REFRESH_DISPLAY.ASM   11-13-2022  14:44:41         PAGE  3
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -167,7 +167,7 @@ Message[305]: Using default destination of 1 (file).
 001D   0CA5           00139         rrf             select_output           ;cambio el select al siguiente puerto
 001E   1803           00140         btfsc   STATUS, C                       ;si el select esta vacio, le cargo el valor al puerto 4
 001F   2???           00141         call    reset_count
-0020   3006           00142         movlw   d'6'
+0020   303C           00142         movlw   d'60'
 0021   0081           00143         movwf   TMR0                            ;vuelvo a configurar el timer0
 0022   110B           00144         bcf             INTCON, T0IF            ;limpio la flag del timer0
 0023   0008           00145         return
@@ -175,7 +175,7 @@ Message[305]: Using default destination of 1 (file).
 0024                  00147 load_digit3
 0024   1383           00148         bcf             STATUS, IRP                     ;limpio el irp
 0025   0824           00149         movf    add_reg_dig, w          ;cargo la primera direccion del char en el fsr
-MPASM  5.40               REFRESH_DISPLAY.ASM   11-13-2022  12:03:40         PAGE  4
+MPASM  5.51               REFRESH_DISPLAY.ASM   11-13-2022  14:44:41         PAGE  4
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -234,7 +234,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 0047   1303           00200         bcf             STATUS, RP1                     ;cambio al banco 1
 0048   1683           00201         bsf             STATUS, RP0
 0049   3000           00202         movlw   b'00000000'                     ;seteo el puerto a como salida  
-MPASM  5.40               REFRESH_DISPLAY.ASM   11-13-2022  12:03:40         PAGE  5
+MPASM  5.51               REFRESH_DISPLAY.ASM   11-13-2022  14:44:41         PAGE  5
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -285,7 +285,7 @@ Message[302]: Register in operand not in bank 0.  Ensure that bank bits are corr
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
 0067   1181           00241         bcf             OPTION_REG, PSA         ;utilizo el Prescaler en Timer0
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0068   1401           00242         bsf             OPTION_REG,     PS0             ;cargo el prescaler en 256
+0068   1001           00242         bcf             OPTION_REG,     PS0             ;cargo el prescaler en 128
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
 0069   1481           00243         bsf             OPTION_REG,     PS1             ;
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
@@ -293,14 +293,14 @@ Message[302]: Register in operand not in bank 0.  Ensure that bank bits are corr
 006B   178B           00245         bsf             INTCON, GIE                     ;activo las interrupciones generales
 006C   168B           00246         bsf             INTCON, T0IE            ;activo la interrupcion por overflow del timer 0
 006D   1283           00247         bcf             STATUS, RP0                     ;cambio al banco 0
-MPASM  5.40               REFRESH_DISPLAY.ASM   11-13-2022  12:03:40         PAGE  6
+MPASM  5.51               REFRESH_DISPLAY.ASM   11-13-2022  14:44:41         PAGE  6
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
 006E   1303           00248         bcf             STATUS, RP1
-006F   3006           00249         movlw   d'6'                            ;seteo el timer en 6
+006F   303C           00249         movlw   d'60'                           ;seteo el timer en 60
 0070   0081           00250         movwf   TMR0
 0071   110B           00251         bcf             INTCON, T0IF            ;limpio la flag del timer overflow
 0072   0008           00252         return
@@ -352,7 +352,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 009D   305B           00298         movlw b'01011011'
 009E   00BB           00299         movwf char_2
 009F   304F           00300         movlw b'01001111'
-MPASM  5.40               REFRESH_DISPLAY.ASM   11-13-2022  12:03:40         PAGE  7
+MPASM  5.51               REFRESH_DISPLAY.ASM   11-13-2022  14:44:41         PAGE  7
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -400,7 +400,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00340 
                       00341 
 3FB3                  00342         END                       ; directive 'end of program'
-MPASM  5.40               REFRESH_DISPLAY.ASM   11-13-2022  12:03:40         PAGE  8
+MPASM  5.51               REFRESH_DISPLAY.ASM   11-13-2022  14:44:41         PAGE  8
 
 
 SYMBOL TABLE
@@ -459,7 +459,7 @@ CHS1                              00000004
 CHS2                              00000005
 CIS                               00000003
 CKE                               00000006
-MPASM  5.40               REFRESH_DISPLAY.ASM   11-13-2022  12:03:40         PAGE  9
+MPASM  5.51               REFRESH_DISPLAY.ASM   11-13-2022  14:44:41         PAGE  9
 
 
 SYMBOL TABLE
@@ -518,7 +518,7 @@ INDF                              00000000
 INTCON                            0000000B
 INTE                              00000004
 INTEDG                            00000006
-MPASM  5.40               REFRESH_DISPLAY.ASM   11-13-2022  12:03:40         PAGE 10
+MPASM  5.51               REFRESH_DISPLAY.ASM   11-13-2022  14:44:41         PAGE 10
 
 
 SYMBOL TABLE
@@ -577,7 +577,7 @@ RA2                               00000002
 RA3                               00000003
 RA4                               00000004
 RA5                               00000005
-MPASM  5.40               REFRESH_DISPLAY.ASM   11-13-2022  12:03:40         PAGE 11
+MPASM  5.51               REFRESH_DISPLAY.ASM   11-13-2022  14:44:41         PAGE 11
 
 
 SYMBOL TABLE
@@ -636,7 +636,7 @@ SPBRG                             00000099
 SPEN                              00000007
 SREN                              00000005
 SSPADD                            00000093
-MPASM  5.40               REFRESH_DISPLAY.ASM   11-13-2022  12:03:40         PAGE 12
+MPASM  5.51               REFRESH_DISPLAY.ASM   11-13-2022  14:44:41         PAGE 12
 
 
 SYMBOL TABLE
@@ -672,6 +672,7 @@ T2CON                             00000012
 TMR0                              00000001
 TMR0IE                            00000005
 TMR0IF                            00000002
+TMR1                              0000000E
 TMR1CS                            00000001
 TMR1H                             0000000F
 TMR1IE                            00000000
@@ -694,13 +695,13 @@ TRISA3                            00000003
 TRISA4                            00000004
 TRISA5                            00000005
 TRISB                             00000086
-TRISB0                            00000000
-MPASM  5.40               REFRESH_DISPLAY.ASM   11-13-2022  12:03:40         PAGE 13
+MPASM  5.51               REFRESH_DISPLAY.ASM   11-13-2022  14:44:41         PAGE 13
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+TRISB0                            00000000
 TRISB1                            00000001
 TRISB2                            00000002
 TRISB3                            00000003
@@ -749,20 +750,27 @@ WRERR                             00000003
 Z                                 00000002
 _BODEN_OFF                        00003FBF
 _BODEN_ON                         00003FFF
+_BOREN_OFF                        00003FBF
+_BOREN_ON                         00003FFF
 _CONFIG                           00002007
 _CPD_OFF                          00003FFF
-_CPD_ON                           00003EFF
-_CP_ALL                           00001FFF
-_CP_OFF                           00003FFF
-MPASM  5.40               REFRESH_DISPLAY.ASM   11-13-2022  12:03:40         PAGE 14
+MPASM  5.51               REFRESH_DISPLAY.ASM   11-13-2022  14:44:41         PAGE 14
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+_CPD_ON                           00003EFF
+_CP_ALL                           00001FFF
+_CP_OFF                           00003FFF
+_CP_ON                            00001FFF
 _DEBUG_OFF                        00003FFF
 _DEBUG_ON                         000037FF
 _DEVID1                           00002006
+_FOSC_EXTRC                       00003FFF
+_FOSC_HS                          00003FFE
+_FOSC_LP                          00003FFC
+_FOSC_XT                          00003FFD
 _HS_OSC                           00003FFE
 _IDLOC0                           00002000
 _IDLOC1                           00002001
@@ -774,6 +782,8 @@ _LVP_ON                           00003FFF
 _PWRTE_OFF                        00003FFF
 _PWRTE_ON                         00003FF7
 _RC_OSC                           00003FFF
+_WDTE_OFF                         00003FFB
+_WDTE_ON                          00003FFF
 _WDT_OFF                          00003FFB
 _WDT_ON                           00003FFF
 _WRT_1FOURTH                      00003BFF
@@ -803,6 +813,12 @@ char_F                            0000002B
 char_G                            0000002C
 char_H                            0000002D
 char_I                            0000002E
+MPASM  5.51               REFRESH_DISPLAY.ASM   11-13-2022  14:44:41         PAGE 15
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 char_J                            0000002F
 char_K                            00000044
 char_L                            00000030
@@ -813,12 +829,6 @@ char_P                            00000034
 char_Q                            00000046
 char_R                            00000035
 char_S                            00000036
-MPASM  5.40               REFRESH_DISPLAY.ASM   11-13-2022  12:03:40         PAGE 15
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 char_T                            00000037
 char_U                            00000038
 char_V                            00000047
