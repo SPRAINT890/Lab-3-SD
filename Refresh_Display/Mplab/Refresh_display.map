@@ -1,0 +1,59 @@
+MPLINK 4.38, Linker
+Linker Map File - Created Sun Nov 13 12:03:41 2022
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000004
+                   .cinit    romdata   0x000002    program   0x000004
+                   .org_1       code   0x000004    program   0x000176
+.config_2007_REFRESH_DISPLAY.O       code   0x002007    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x0000be      
+                            0x002007    0x002007      
+            192 out of 8454 program addresses used, program memory utilization is 2%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                digit_set   0x000057    program     static C:\Users\Gaspar\Lab-3-SD\Refresh_Display\Refresh_display.ASM
+              load_digit0   0x000038    program     static C:\Users\Gaspar\Lab-3-SD\Refresh_Display\Refresh_display.ASM
+              load_digit1   0x000032    program     static C:\Users\Gaspar\Lab-3-SD\Refresh_Display\Refresh_display.ASM
+              load_digit2   0x00002c    program     static C:\Users\Gaspar\Lab-3-SD\Refresh_Display\Refresh_display.ASM
+              load_digit3   0x000024    program     static C:\Users\Gaspar\Lab-3-SD\Refresh_Display\Refresh_display.ASM
+                     loop   0x0000be    program     static C:\Users\Gaspar\Lab-3-SD\Refresh_Display\Refresh_display.ASM
+                     main   0x000041    program     static C:\Users\Gaspar\Lab-3-SD\Refresh_Display\Refresh_display.ASM
+               porta_init   0x000047    program     static C:\Users\Gaspar\Lab-3-SD\Refresh_Display\Refresh_display.ASM
+               portb_init   0x000050    program     static C:\Users\Gaspar\Lab-3-SD\Refresh_Display\Refresh_display.ASM
+              reset_count   0x00003e    program     static C:\Users\Gaspar\Lab-3-SD\Refresh_Display\Refresh_display.ASM
+          show_in_display   0x000014    program     static C:\Users\Gaspar\Lab-3-SD\Refresh_Display\Refresh_display.ASM
+                table_set   0x000073    program     static C:\Users\Gaspar\Lab-3-SD\Refresh_Display\Refresh_display.ASM
+              timer0_init   0x000064    program     static C:\Users\Gaspar\Lab-3-SD\Refresh_Display\Refresh_display.ASM
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+          show_in_display   0x000014    program     static C:\Users\Gaspar\Lab-3-SD\Refresh_Display\Refresh_display.ASM
+              load_digit3   0x000024    program     static C:\Users\Gaspar\Lab-3-SD\Refresh_Display\Refresh_display.ASM
+              load_digit2   0x00002c    program     static C:\Users\Gaspar\Lab-3-SD\Refresh_Display\Refresh_display.ASM
+              load_digit1   0x000032    program     static C:\Users\Gaspar\Lab-3-SD\Refresh_Display\Refresh_display.ASM
+              load_digit0   0x000038    program     static C:\Users\Gaspar\Lab-3-SD\Refresh_Display\Refresh_display.ASM
+              reset_count   0x00003e    program     static C:\Users\Gaspar\Lab-3-SD\Refresh_Display\Refresh_display.ASM
+                     main   0x000041    program     static C:\Users\Gaspar\Lab-3-SD\Refresh_Display\Refresh_display.ASM
+               porta_init   0x000047    program     static C:\Users\Gaspar\Lab-3-SD\Refresh_Display\Refresh_display.ASM
+               portb_init   0x000050    program     static C:\Users\Gaspar\Lab-3-SD\Refresh_Display\Refresh_display.ASM
+                digit_set   0x000057    program     static C:\Users\Gaspar\Lab-3-SD\Refresh_Display\Refresh_display.ASM
+              timer0_init   0x000064    program     static C:\Users\Gaspar\Lab-3-SD\Refresh_Display\Refresh_display.ASM
+                table_set   0x000073    program     static C:\Users\Gaspar\Lab-3-SD\Refresh_Display\Refresh_display.ASM
+                     loop   0x0000be    program     static C:\Users\Gaspar\Lab-3-SD\Refresh_Display\Refresh_display.ASM
+
+

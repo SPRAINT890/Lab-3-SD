@@ -1,4 +1,4 @@
-MPASM  5.51                   LED_TRIGGER.ASM   11-9-2022  18:40:23         PAGE  1
+MPASM  5.40                   LED_TRIGGER.ASM   11-13-2022  11:48:20         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -43,10 +43,10 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00003 ;==========================================================================
                       00004 ;  MPASM PIC16F877A processor include
                       00005 ; 
-                      00006 ;  (c) Copyright 1999-2013 Microchip Technology, All rights reserved
+                      00006 ;  (c) Copyright 1999-2011 Microchip Technology, All rights reserved
                       00007 ;==========================================================================
                       00008 
-                      00566         LIST
+                      00555         LIST
                       00035         
 2007   3FB3           00036         __CONFIG _CP_OFF & _WDT_OFF & _BODEN_OFF & _PWRTE_ON & _RC_OSC & _WRT_OFF & _LVP_ON & _CPD_OFF
                       00037 
@@ -57,7 +57,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00042 
                       00043 
                       00044 
-MPASM  5.51                   LED_TRIGGER.ASM   11-9-2022  18:40:23         PAGE  2
+MPASM  5.40                   LED_TRIGGER.ASM   11-13-2022  11:48:20         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -70,7 +70,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
   0000007E            00049 status_temp     EQU     0x7E            ; variable used for context saving
   0000007F            00050 pclath_temp     EQU     0x7F            ; variable used for context saving      
                       00051 
-  00000020            00052 cont_timer      EQU 0x20                
+  00000020            00052 cont_timer      EQU 0x20                ;contador Auxiliar              
                       00053 
                       00054 
                       00055 
@@ -105,18 +105,18 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00084 
                       00085 
 0010                  00086 main
-0010   2???           00087         call porta_init
-0011   2???           00088         call timer0_init
-0012   2???           00089         goto read_porta
+0010   2???           00087         call porta_init                 ;configuracion de porta
+0011   2???           00088         call timer0_init                ;configuracion de timer0
+0012   2???           00089         goto read_porta                 ;leer valor de entrada porta
                       00090         
                       00091 ; remaining code goes here
                       00092 
 0013                  00093 porta_init
                       00094         ;Config PORTA - start
-0013   1303           00095         bcf             STATUS, RP1
+0013   1303           00095         bcf             STATUS, RP1                     ;cambio al banco 1
 0014   1683           00096         bsf             STATUS, RP0
-0015   3001           00097         movlw   b'00000001'                     ; set all pins as outputs
-MPASM  5.51                   LED_TRIGGER.ASM   11-9-2022  18:40:23         PAGE  3
+0015   3001           00097         movlw   b'00000001'                     ; set el pin 0 como input
+MPASM  5.40                   LED_TRIGGER.ASM   11-13-2022  11:48:20         PAGE  3
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -124,68 +124,69 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
 0016   0085           00098         movwf   TRISA
-0017   3006           00099         movlw   0x06                            ; set all pins a I/O Ports
+0017   3006           00099         movlw   0x06                            ; seteo todos los pines como digitales
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
 0018   009F           00100         movwf   ADCON1
-0019   1303           00101         bcf             STATUS, RP1
+0019   1303           00101         bcf             STATUS, RP1                     ;cambio al banco 0
 001A   1283           00102         bcf             STATUS, RP0
 001B   0008           00103         return
                       00104         ;Config PORTA - end
                       00105 
 001C                  00106 timer0_init
-001C   1303           00107         bcf     STATUS, RP1
+001C   1303           00107         bcf     STATUS, RP1                     ;cambio al banco 1
 001D   1683           00108         bsf             STATUS, RP0
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-001E   1281           00109         bcf             OPTION_REG, T0CS
+001E   1281           00109         bcf             OPTION_REG, T0CS        ;utilizo el reloj del procesador
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-001F   1181           00110         bcf             OPTION_REG, PSA
+001F   1181           00110         bcf             OPTION_REG, PSA         ;asigno el prescaler al timer0
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0020   1401           00111         bsf             OPTION_REG,     PS0
+0020   1401           00111         bsf             OPTION_REG,     PS0             ;configuro el prescaler a 256
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0021   1481           00112         bsf             OPTION_REG,     PS1
+0021   1481           00112         bsf             OPTION_REG,     PS1             ;
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0022   1501           00113         bsf             OPTION_REG,     PS2
+0022   1501           00113         bsf             OPTION_REG,     PS2             ;
 0023   0008           00114         return
                       00115 
 0024                  00116 read_porta
-0024   1283           00117         bcf             STATUS, RP0
+0024   1283           00117         bcf             STATUS, RP0                     ;cambio al banco 0
 0025   1303           00118         bcf             STATUS, RP1
-0026   1085           00119         bcf             PORTA,d'1'      ; Cuando trigger esta en low el led esta apagado
-0027   1805           00120         btfsc   PORTA, d'0'
-0028   2???           00121         goto    led_on
-0029   2???           00122         goto    read_porta
+0026   1085           00119         bcf             PORTA,d'1'                      ; Cuando trigger esta en low el led esta apagado
+0027   1805           00120         btfsc   PORTA, d'0'                     ;tengo entrada en el pin 0 en el puerto a
+0028   2???           00121         goto    led_on                          ;si
+0029   2???           00122         goto    read_porta                      ;no
                       00123 
                       00124 
 002A                  00125 led_on
 002A   1485           00126         bsf             PORTA,d'1'      ; Led on
-                      00127         
-002B   30C8           00128         movlw   d'200'          ; Inicio el contador en 200
-002C   00A0           00129         movwf   cont_timer
+002B   30C8           00127         movlw   d'200'          ; Inicio el contador en 200
+002C   00A0           00128         movwf   cont_timer
+002D   2???           00129         goto    loopa_timer
                       00130         
-002D                  00131 loopa_timer
-002D   300C           00132         movlw   d'12'           ; Timer inicia en 12 y se limpia la flag
-002E   0081           00133         movwf   TMR0    
-002F   110B           00134         bcf             INTCON, T0IF
-                      00135 
-0030                  00136 loopb_timer
-0030   1D0B           00137         btfss   INTCON, T0IF    ; Wait for flag
-0031   2???           00138         goto    loopb_timer             
-                      00139 
+002E                  00131 loopa_timer
+002E   300C           00132         movlw   d'12'           ; Timer inicia en 12 y se limpia la flag
+002F   0081           00133         movwf   TMR0    
+0030   110B           00134         bcf             INTCON, T0IF
+0031   2???           00135         goto    loopb_timer
+                      00136 
+0032                  00137 loopb_timer
+0032   1D0B           00138         btfss   INTCON, T0IF    ; Wait for flag
+0033   2???           00139         goto    loopb_timer             
+                      00140 
 Message[305]: Using default destination of 1 (file).
-0032   0BA0           00140         decfsz  cont_timer              ; decrease counter
-0033   2???           00141         goto    loopa_timer
-0034   2???           00142         goto    read_porta
-MPASM  5.51                   LED_TRIGGER.ASM   11-9-2022  18:40:23         PAGE  4
+0034   0BA0           00141         decfsz  cont_timer              ; decrease counter
+0035   2???           00142         goto    loopa_timer
+MPASM  5.40                   LED_TRIGGER.ASM   11-13-2022  11:48:20         PAGE  4
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-                      00143 
+0036   2???           00143         goto    read_porta
                       00144 
                       00145 
-3FB3                  00146         END                       ; directive 'end of program'
-MPASM  5.51                   LED_TRIGGER.ASM   11-9-2022  18:40:23         PAGE  5
+                      00146 
+3FB3                  00147         END                       ; directive 'end of program'
+MPASM  5.40                   LED_TRIGGER.ASM   11-13-2022  11:48:20         PAGE  5
 
 
 SYMBOL TABLE
@@ -244,7 +245,7 @@ CHS1                              00000004
 CHS2                              00000005
 CIS                               00000003
 CKE                               00000006
-MPASM  5.51                   LED_TRIGGER.ASM   11-9-2022  18:40:23         PAGE  6
+MPASM  5.40                   LED_TRIGGER.ASM   11-13-2022  11:48:20         PAGE  6
 
 
 SYMBOL TABLE
@@ -303,7 +304,7 @@ INTF                              00000001
 IRP                               00000007
 NOT_A                             00000005
 NOT_ADDRESS                       00000005
-MPASM  5.51                   LED_TRIGGER.ASM   11-9-2022  18:40:23         PAGE  7
+MPASM  5.40                   LED_TRIGGER.ASM   11-13-2022  11:48:20         PAGE  7
 
 
 SYMBOL TABLE
@@ -362,7 +363,7 @@ RB0                               00000000
 RB1                               00000001
 RB2                               00000002
 RB3                               00000003
-MPASM  5.51                   LED_TRIGGER.ASM   11-9-2022  18:40:23         PAGE  8
+MPASM  5.40                   LED_TRIGGER.ASM   11-13-2022  11:48:20         PAGE  8
 
 
 SYMBOL TABLE
@@ -421,7 +422,7 @@ SSPBUF                            00000013
 SSPCON                            00000014
 SSPCON2                           00000091
 SSPEN                             00000005
-MPASM  5.51                   LED_TRIGGER.ASM   11-9-2022  18:40:23         PAGE  9
+MPASM  5.40                   LED_TRIGGER.ASM   11-13-2022  11:48:20         PAGE  9
 
 
 SYMBOL TABLE
@@ -453,7 +454,6 @@ T2CON                             00000012
 TMR0                              00000001
 TMR0IE                            00000005
 TMR0IF                            00000002
-TMR1                              0000000E
 TMR1CS                            00000001
 TMR1H                             0000000F
 TMR1IE                            00000000
@@ -480,13 +480,13 @@ TRISB0                            00000000
 TRISB1                            00000001
 TRISB2                            00000002
 TRISB3                            00000003
-MPASM  5.51                   LED_TRIGGER.ASM   11-9-2022  18:40:23         PAGE 10
+TRISB4                            00000004
+MPASM  5.40                   LED_TRIGGER.ASM   11-13-2022  11:48:20         PAGE 10
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-TRISB4                            00000004
 TRISB5                            00000005
 TRISB6                            00000006
 TRISB7                            00000007
@@ -531,28 +531,21 @@ WRERR                             00000003
 Z                                 00000002
 _BODEN_OFF                        00003FBF
 _BODEN_ON                         00003FFF
-_BOREN_OFF                        00003FBF
-_BOREN_ON                         00003FFF
 _CONFIG                           00002007
 _CPD_OFF                          00003FFF
 _CPD_ON                           00003EFF
 _CP_ALL                           00001FFF
 _CP_OFF                           00003FFF
-_CP_ON                            00001FFF
-MPASM  5.51                   LED_TRIGGER.ASM   11-9-2022  18:40:23         PAGE 11
+_DEBUG_OFF                        00003FFF
+_DEBUG_ON                         000037FF
+_DEVID1                           00002006
+_HS_OSC                           00003FFE
+MPASM  5.40                   LED_TRIGGER.ASM   11-13-2022  11:48:20         PAGE 11
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-_DEBUG_OFF                        00003FFF
-_DEBUG_ON                         000037FF
-_DEVID1                           00002006
-_FOSC_EXTRC                       00003FFF
-_FOSC_HS                          00003FFE
-_FOSC_LP                          00003FFC
-_FOSC_XT                          00003FFD
-_HS_OSC                           00003FFE
 _IDLOC0                           00002000
 _IDLOC1                           00002001
 _IDLOC2                           00002002
@@ -563,8 +556,6 @@ _LVP_ON                           00003FFF
 _PWRTE_OFF                        00003FFF
 _PWRTE_ON                         00003FF7
 _RC_OSC                           00003FFF
-_WDTE_OFF                         00003FFB
-_WDTE_ON                          00003FFF
 _WDT_OFF                          00003FFB
 _WDT_ON                           00003FFF
 _WRT_1FOURTH                      00003BFF
@@ -576,8 +567,8 @@ __16F877A                         00000001
 __DEBUG                           1
 cont_timer                        00000020
 led_on                            0000002A
-loopa_timer                       0000002D
-loopb_timer                       00000030
+loopa_timer                       0000002E
+loopb_timer                       00000032
 main                              00000010
 pclath_temp                       0000007F
 porta_init                        00000013

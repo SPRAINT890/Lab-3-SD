@@ -49,7 +49,7 @@ w_temp		EQU	0x7D		; variable used for context saving
 status_temp	EQU	0x7E		; variable used for context saving
 pclath_temp	EQU	0x7F		; variable used for context saving	
 
-cont_timer	EQU 0x20		
+cont_timer	EQU 0x20		;contador Auxiliar		
 
 
 
@@ -84,54 +84,55 @@ cont_timer	EQU 0x20
 
 
 main
-	call porta_init
-	call timer0_init
-	goto read_porta
+	call porta_init			;configuracion de porta
+	call timer0_init		;configuracion de timer0
+	goto read_porta			;leer valor de entrada porta
 	
 ; remaining code goes here
 
 porta_init
 	;Config PORTA - start
-	bcf		STATUS, RP1
+	bcf		STATUS, RP1			;cambio al banco 1
 	bsf		STATUS, RP0
-	movlw	b'00000001'			; set all pins as outputs
+	movlw	b'00000001'			; set el pin 0 como input
 	movwf	TRISA
-	movlw	0x06				; set all pins a I/O Ports
+	movlw	0x06				; seteo todos los pines como digitales
 	movwf	ADCON1
-	bcf		STATUS, RP1
+	bcf		STATUS, RP1			;cambio al banco 0
 	bcf		STATUS, RP0
 	return
 	;Config PORTA - end
 
 timer0_init
-	bcf 	STATUS, RP1
+	bcf 	STATUS, RP1			;cambio al banco 1
 	bsf		STATUS,	RP0
-	bcf		OPTION_REG, T0CS
-	bcf		OPTION_REG, PSA
-	bsf		OPTION_REG,	PS0
-	bsf		OPTION_REG,	PS1
-	bsf		OPTION_REG,	PS2
+	bcf		OPTION_REG, T0CS	;utilizo el reloj del procesador
+	bcf		OPTION_REG, PSA		;asigno el prescaler al timer0
+	bsf		OPTION_REG,	PS0		;configuro el prescaler a 256
+	bsf		OPTION_REG,	PS1		;
+	bsf		OPTION_REG,	PS2		;
 	return
 
 read_porta
-	bcf		STATUS, RP0
+	bcf		STATUS, RP0			;cambio al banco 0
 	bcf		STATUS, RP1
-	bcf		PORTA,d'1'	; Cuando trigger esta en low el led esta apagado
-	btfsc	PORTA, d'0'
-	goto	led_on
-	goto	read_porta
+	bcf		PORTA,d'1'			; Cuando trigger esta en low el led esta apagado
+	btfsc	PORTA, d'0'			;tengo entrada en el pin 0 en el puerto a
+	goto	led_on				;si
+	goto	read_porta			;no
 
 
 led_on
 	bsf		PORTA,d'1'	; Led on
-	
 	movlw	d'200'		; Inicio el contador en 200
 	movwf	cont_timer
+	goto 	loopa_timer
 	
 loopa_timer
 	movlw	d'12'		; Timer inicia en 12 y se limpia la flag
 	movwf	TMR0	
 	bcf		INTCON, T0IF
+	goto	loopb_timer
 
 loopb_timer
 	btfss	INTCON, T0IF	; Wait for flag

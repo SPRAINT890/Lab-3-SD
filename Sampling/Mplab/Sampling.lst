@@ -1,4 +1,4 @@
-MPASM  5.40                      SAMPLING.ASM   11-9-2022  23:15:19         PAGE  1
+MPASM  5.40                      SAMPLING.ASM   11-13-2022  12:24:08         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -57,7 +57,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00042 
                       00043 
                       00044 
-MPASM  5.40                      SAMPLING.ASM   11-9-2022  23:15:19         PAGE  2
+MPASM  5.40                      SAMPLING.ASM   11-13-2022  12:24:08         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -93,7 +93,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 0007   080A           00072         movf    PCLATH,w          ; move pclath register into w register
 0008   00FF           00073         movwf   pclath_temp       ; save off contents of PCLATH register
                       00074         
-0009   190B           00075         btfsc   INTCON, T0IF
+0009   190B           00075         btfsc   INTCON, T0IF    ;pregunto si se levanto el flag del timer0
 000A   2???           00076         call    calc_analog_res
 000B   087F           00077         movf    pclath_temp,w     ; retrieve copy of PCLATH register
 000C   008A           00078         movwf   PCLATH            ; restore pre-isr PCLATH register contents
@@ -104,66 +104,66 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 0011   0009           00083         retfie                    ; return from interrupt
                       00084 
 0012                  00085 calc_analog_res
-0012   2???           00086         call    calc_val_0
-0013   081E           00087         movf    ADRESH, w
+0012   2???           00086         call    calc_val_0              ;calculo el valor de an0
+0013   081E           00087         movf    ADRESH, w               ;guardo el resultado en AN0_RES
 0014   00A0           00088         movwf   AN0_RES
-0015   2???           00089         call    calc_val_1
-0016   081E           00090         movf    ADRESH, w
+0015   2???           00089         call    calc_val_1              ;calcuki ek valor de an1
+0016   081E           00090         movf    ADRESH, w               ;guardo el resultado en AN1_RES
 0017   00A1           00091         movwf   AN1_RES
-0018   3006           00092         movlw   d'6'
+0018   3006           00092         movlw   d'6'                    ;vuelvo a cargar el timer0
 0019   0081           00093         movwf   TMR0
-001A   110B           00094         bcf             INTCON, T0IF
+001A   110B           00094         bcf             INTCON, T0IF    ;limpio la flag de timer0
 001B   0008           00095         return
                       00096 
 001C                  00097 calc_val_0
-MPASM  5.40                      SAMPLING.ASM   11-9-2022  23:15:19         PAGE  3
+MPASM  5.40                      SAMPLING.ASM   11-13-2022  12:24:08         PAGE  3
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-001C   1303           00098         bcf             STATUS, RP1
+001C   1303           00098         bcf             STATUS, RP1             ;cambio al banco 0
 001D   1283           00099         bcf             STATUS, RP0
                       00100 
-001E   119F           00101         bcf             ADCON0, CHS0
+001E   119F           00101         bcf             ADCON0, CHS0    ;selecciono el pin 0
 001F   121F           00102         bcf             ADCON0, CHS1
 0020   129F           00103         bcf             ADCON0, CHS2
-0021   151F           00104         bsf     ADCON0, d'2'
-0022   2???           00105         call    check_flag_tmr0
+0021   151F           00104         bsf     ADCON0, d'2'    ;activo el Analog to Digital
+0022   2???           00105         call    check_flag_done ;compruebo la flag
 0023   0008           00106         return
                       00107 
 0024                  00108 calc_val_1
-0024   1303           00109         bcf             STATUS, RP1
+0024   1303           00109         bcf             STATUS, RP1             ;cambio al banco 0
 0025   1283           00110         bcf             STATUS, RP0
                       00111 
-0026   159F           00112         bsf             ADCON0, CHS0
+0026   159F           00112         bsf             ADCON0, CHS0    ;selecciono el pin 1
 0027   121F           00113         bcf             ADCON0, CHS1
 0028   129F           00114         bcf             ADCON0, CHS2
-0029   151F           00115         bsf     ADCON0, d'2'
-002A   2???           00116         call    check_flag_tmr0
+0029   151F           00115         bsf     ADCON0, d'2'    ;activo el Analog to Digital
+002A   2???           00116         call    check_flag_done ;compruebo la flag
 002B   0008           00117         return
                       00118 
-002C                  00119 check_flag_tmr0
-002C   191F           00120         btfsc   ADCON0, d'2'
-002D   0008           00121         return
-002E   2???           00122         goto check_flag_tmr0
+002C                  00119 check_flag_done
+002C   191F           00120         btfsc   ADCON0, d'2'    ;compruebo la flag done
+002D   0008           00121         return                                  
+002E   2???           00122         goto check_flag_done
                       00123 
 002F                  00124 main
-002F   2???           00125         call porta_init
-0030   2???           00126         call portb_init
-0031   2???           00127         call portc_init
-0032   2???           00128         call timer0_init
-0033   2???           00129         goto read_select
+002F   2???           00125         call porta_init                 ;configuro el puerto a
+0030   2???           00126         call portb_init                 ;configuro el puerto b
+0031   2???           00127         call portc_init                 ;configuro el puerto c
+0032   2???           00128         call timer0_init                ;configuro el timer0
+0033   2???           00129         goto read_select                ;selecciono cual valor mostrar
                       00130 
 0034                  00131 porta_init
                       00132         ;Config PORTA - start
 0034   1303           00133         bcf             STATUS, RP1             ;cambio al banco 1
 0035   1683           00134         bsf             STATUS, RP0
-0036   3003           00135         movlw   b'00000011'             ;seteo el pin 0 y 1 en input
+0036   3003           00135         movlw   b'00000011'             ;seteo el pin 0 y 1 como input
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
 0037   0085           00136         movwf   TRISA
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0038   119F           00137         bcf             ADCON1, PCFG3   ;seteo la entrada como analogica
+0038   119F           00137         bcf             ADCON1, PCFG3   ;seteo las entradas como analogica
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
 0039   111F           00138         bcf             ADCON1, PCFG2   ;
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
@@ -175,13 +175,13 @@ Message[302]: Register in operand not in bank 0.  Ensure that bank bits are corr
                       00142         
 003D   1303           00143         bcf             STATUS, RP1             ;cambio al banco 0
 003E   1283           00144         bcf             STATUS, RP0
-MPASM  5.40                      SAMPLING.ASM   11-9-2022  23:15:19         PAGE  4
+MPASM  5.40                      SAMPLING.ASM   11-13-2022  12:24:08         PAGE  4
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-003F   141F           00145         bsf             ADCON0, ADON    ;
+003F   141F           00145         bsf             ADCON0, ADON    ;activo la funcion AD
 0040   0008           00146         return
                       00147         ;Config PORTA - end
                       00148 
@@ -192,7 +192,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 0043   3000           00153         movlw   b'00000000'             ;seteo el puerto b como salida          
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
 0044   0086           00154         movwf   TRISB
-0045   1303           00155         bcf             STATUS, RP1
+0045   1303           00155         bcf             STATUS, RP1             ;cambio al banco 0
 0046   1283           00156         bcf             STATUS, RP0
 0047   0008           00157         return
                       00158         ;Config PORTB - end
@@ -217,14 +217,14 @@ Message[302]: Register in operand not in bank 0.  Ensure that bank bits are corr
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
 0052   1181           00175         bcf             OPTION_REG, PSA         ;utilizo el Prescaler en Timer0
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0053   1401           00176         bsf             OPTION_REG,     PS0             ;
+0053   1401           00176         bsf             OPTION_REG,     PS0             ;cargo el prescaler en 256
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
 0054   1481           00177         bsf             OPTION_REG,     PS1             ;
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
 0055   1501           00178         bsf             OPTION_REG,     PS2             ;
-0056   178B           00179         bsf             INTCON, GIE
-0057   168B           00180         bsf             INTCON, T0IE
-0058   1283           00181         bcf             STATUS, RP0                     ;cambio al banco 1
+0056   178B           00179         bsf             INTCON, GIE                     ;activo las interrupciones
+0057   168B           00180         bsf             INTCON, T0IE            ;activo la interrupcion por overflow del timer 0
+0058   1283           00181         bcf             STATUS, RP0                     ;cambio al banco 0
 0059   1303           00182         bcf             STATUS, RP1
 005A   3006           00183         movlw   d'6'                            ;seteo el timer en 6
 005B   0081           00184         movwf   TMR0
@@ -234,22 +234,22 @@ Message[302]: Register in operand not in bank 0.  Ensure that bank bits are corr
 005E                  00188 read_select
 005E   1303           00189         bcf             STATUS, RP1                     ;cambio al banco 0
 005F   1283           00190         bcf             STATUS, RP0
-MPASM  5.40                      SAMPLING.ASM   11-9-2022  23:15:19         PAGE  5
+MPASM  5.40                      SAMPLING.ASM   11-13-2022  12:24:08         PAGE  5
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
 0060   1C07           00191         btfss   PORTC, d'0'                     ;el select es 0
-0061   2???           00192         goto    set_an0                         ;no
-0062   2???           00193         goto    set_an1                         ;si
+0061   2???           00192         goto    set_an0                         ;si
+0062   2???           00193         goto    set_an1                         ;no
                       00194 
 0063                  00195 set_an0
 0063   0820           00196         movf    AN0_RES, w                      ;muestro en el puerto b el resultado de an0
 0064   0086           00197         movwf   PORTB
 0065   2???           00198         goto    read_select
                       00199 
-0066                  00200 set_an1                                                 ;muestro en el puerto b el resultado de an0     
+0066                  00200 set_an1                                                 ;muestro en el puerto b el resultado de an1     
 0066   0821           00201         movf    AN1_RES, w
 0067   0086           00202         movwf   PORTB
 0068   2???           00203         goto    read_select
@@ -260,7 +260,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00208 
                       00209 
 3FB3                  00210         END                       ; directive 'end of program'
-MPASM  5.40                      SAMPLING.ASM   11-9-2022  23:15:19         PAGE  6
+MPASM  5.40                      SAMPLING.ASM   11-13-2022  12:24:08         PAGE  6
 
 
 SYMBOL TABLE
@@ -319,7 +319,7 @@ CCPR2L                            0000001B
 CHS0                              00000003
 CHS1                              00000004
 CHS2                              00000005
-MPASM  5.40                      SAMPLING.ASM   11-9-2022  23:15:19         PAGE  7
+MPASM  5.40                      SAMPLING.ASM   11-13-2022  12:24:08         PAGE  7
 
 
 SYMBOL TABLE
@@ -378,7 +378,7 @@ INTE                              00000004
 INTEDG                            00000006
 INTF                              00000001
 IRP                               00000007
-MPASM  5.40                      SAMPLING.ASM   11-9-2022  23:15:19         PAGE  8
+MPASM  5.40                      SAMPLING.ASM   11-13-2022  12:24:08         PAGE  8
 
 
 SYMBOL TABLE
@@ -437,7 +437,7 @@ RA4                               00000004
 RA5                               00000005
 RB0                               00000000
 RB1                               00000001
-MPASM  5.40                      SAMPLING.ASM   11-9-2022  23:15:19         PAGE  9
+MPASM  5.40                      SAMPLING.ASM   11-13-2022  12:24:08         PAGE  9
 
 
 SYMBOL TABLE
@@ -496,7 +496,7 @@ SREN                              00000005
 SSPADD                            00000093
 SSPBUF                            00000013
 SSPCON                            00000014
-MPASM  5.40                      SAMPLING.ASM   11-9-2022  23:15:19         PAGE 10
+MPASM  5.40                      SAMPLING.ASM   11-13-2022  12:24:08         PAGE 10
 
 
 SYMBOL TABLE
@@ -555,7 +555,7 @@ TRISB                             00000086
 TRISB0                            00000000
 TRISB1                            00000001
 TRISB2                            00000002
-MPASM  5.40                      SAMPLING.ASM   11-9-2022  23:15:19         PAGE 11
+MPASM  5.40                      SAMPLING.ASM   11-13-2022  12:24:08         PAGE 11
 
 
 SYMBOL TABLE
@@ -614,7 +614,7 @@ _CP_ALL                           00001FFF
 _CP_OFF                           00003FFF
 _DEBUG_OFF                        00003FFF
 _DEBUG_ON                         000037FF
-MPASM  5.40                      SAMPLING.ASM   11-9-2022  23:15:19         PAGE 12
+MPASM  5.40                      SAMPLING.ASM   11-13-2022  12:24:08         PAGE 12
 
 
 SYMBOL TABLE
@@ -644,7 +644,7 @@ __DEBUG                           1
 calc_analog_res                   00000012
 calc_val_0                        0000001C
 calc_val_1                        00000024
-check_flag_tmr0                   0000002C
+check_flag_done                   0000002C
 main                              0000002F
 pclath_temp                       0000007F
 porta_init                        00000034

@@ -72,7 +72,7 @@ AN1_RES		EQU	0x21
 	movf	PCLATH,w	  ; move pclath register into w register
 	movwf	pclath_temp	  ; save off contents of PCLATH register
 	
-	btfsc	INTCON, T0IF
+	btfsc	INTCON, T0IF	;pregunto si se levanto el flag del timer0
 	call 	calc_analog_res
 	movf	pclath_temp,w	  ; retrieve copy of PCLATH register
 	movwf	PCLATH		  ; restore pre-isr PCLATH register contents
@@ -83,58 +83,58 @@ AN1_RES		EQU	0x21
 	retfie                    ; return from interrupt
 
 calc_analog_res
-	call 	calc_val_0
-	movf 	ADRESH, w
+	call 	calc_val_0		;calculo el valor de an0
+	movf 	ADRESH, w		;guardo el resultado en AN0_RES
 	movwf 	AN0_RES
-	call 	calc_val_1
-	movf 	ADRESH, w
+	call 	calc_val_1		;calcuki ek valor de an1
+	movf 	ADRESH, w		;guardo el resultado en AN1_RES
 	movwf 	AN1_RES
-	movlw	d'6'
+	movlw	d'6'			;vuelvo a cargar el timer0
 	movwf	TMR0
-	bcf		INTCON, T0IF
+	bcf		INTCON, T0IF	;limpio la flag de timer0
 	return
 
 calc_val_0
-	bcf		STATUS, RP1
+	bcf		STATUS, RP1		;cambio al banco 0
 	bcf		STATUS, RP0
 
-	bcf		ADCON0, CHS0
+	bcf		ADCON0, CHS0	;selecciono el pin 0
 	bcf		ADCON0, CHS1
 	bcf		ADCON0, CHS2
-	bsf 	ADCON0, d'2'
-	call	check_flag_tmr0
+	bsf 	ADCON0, d'2'	;activo el Analog to Digital
+	call	check_flag_done	;compruebo la flag
 	return
 
 calc_val_1
-	bcf		STATUS, RP1
+	bcf		STATUS, RP1		;cambio al banco 0
 	bcf		STATUS, RP0
 
-	bsf		ADCON0, CHS0
+	bsf		ADCON0, CHS0	;selecciono el pin 1
 	bcf		ADCON0, CHS1
 	bcf		ADCON0, CHS2
-	bsf 	ADCON0, d'2'
-	call	check_flag_tmr0
+	bsf 	ADCON0, d'2'	;activo el Analog to Digital
+	call	check_flag_done	;compruebo la flag
 	return
 
-check_flag_tmr0
-	btfsc	ADCON0, d'2'
-	return
-	goto check_flag_tmr0
+check_flag_done
+	btfsc	ADCON0, d'2'	;compruebo la flag done
+	return					
+	goto check_flag_done
 
 main
-	call porta_init
-	call portb_init
-	call portc_init
-	call timer0_init
-	goto read_select
+	call porta_init			;configuro el puerto a
+	call portb_init			;configuro el puerto b
+	call portc_init			;configuro el puerto c
+	call timer0_init		;configuro el timer0
+	goto read_select		;selecciono cual valor mostrar
 
 porta_init
 	;Config PORTA - start
 	bcf		STATUS, RP1		;cambio al banco 1
 	bsf		STATUS, RP0
-	movlw	b'00000011'		;seteo el pin 0 y 1 en input
+	movlw	b'00000011'		;seteo el pin 0 y 1 como input
 	movwf	TRISA
-	bcf		ADCON1, PCFG3	;seteo la entrada como analogica
+	bcf		ADCON1, PCFG3	;seteo las entradas como analogica
 	bcf		ADCON1, PCFG2	;
 	bcf		ADCON1, PCFG1	;
 	bcf		ADCON1, PCFG0	;
@@ -142,7 +142,7 @@ porta_init
 	
 	bcf		STATUS, RP1		;cambio al banco 0
 	bcf		STATUS, RP0
-	bsf		ADCON0, ADON	;
+	bsf		ADCON0, ADON	;activo la funcion AD
 	return
 	;Config PORTA - end
 
@@ -152,7 +152,7 @@ portb_init
 	bsf		STATUS, RP0		
 	movlw	b'00000000'		;seteo el puerto b como salida		
 	movwf	TRISB
-	bcf		STATUS, RP1
+	bcf		STATUS, RP1		;cambio al banco 0
 	bcf		STATUS, RP0
 	return
 	;Config PORTB - end
@@ -173,12 +173,12 @@ timer0_init
 	bsf		STATUS,	RP0
 	bcf		OPTION_REG, T0CS	;utilizo el clock del microprocesador
 	bcf		OPTION_REG, PSA		;utilizo el Prescaler en Timer0
-	bsf		OPTION_REG,	PS0		;
+	bsf		OPTION_REG,	PS0		;cargo el prescaler en 256
 	bsf		OPTION_REG,	PS1		;
 	bsf		OPTION_REG,	PS2		;
-	bsf		INTCON, GIE
-	bsf		INTCON, T0IE
-	bcf		STATUS, RP0			;cambio al banco 1
+	bsf		INTCON, GIE			;activo las interrupciones
+	bsf		INTCON, T0IE		;activo la interrupcion por overflow del timer 0
+	bcf		STATUS, RP0			;cambio al banco 0
 	bcf		STATUS, RP1
 	movlw	d'6'				;seteo el timer en 6
 	movwf	TMR0
@@ -189,15 +189,15 @@ read_select
 	bcf		STATUS, RP1			;cambio al banco 0
 	bcf		STATUS, RP0
 	btfss	PORTC, d'0'			;el select es 0
-	goto	set_an0				;no
-	goto	set_an1				;si
+	goto	set_an0				;si
+	goto	set_an1				;no
 
 set_an0
 	movf 	AN0_RES, w			;muestro en el puerto b el resultado de an0
 	movwf	PORTB
 	goto	read_select
 
-set_an1							;muestro en el puerto b el resultado de an0	
+set_an1							;muestro en el puerto b el resultado de an1	
 	movf 	AN1_RES, w
 	movwf	PORTB
 	goto	read_select
